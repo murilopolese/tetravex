@@ -158,23 +158,27 @@ function App() {
   const [ selectedTile, setSelectedTile ] = useState<string|null>(null)
   const [ hand, setHand ] = useState(initialHand)
 
-  let lost = false
-  if (hand.length == 0) {
-    console.log('empty hand')
-    lost = false
-  } else {
-    let canDropSomewhere = false
-    hand.forEach(tile => {
-      for (let y = 0; y < 5; y++) {
-        for (let x = 0; x < 5; x++) {
-          if (grid[y][x] == '0000' && canDrop(`tile_${x}_${y}`, tile, grid)) {
-            canDropSomewhere = true
+  const lost = useMemo(() => {
+    let lost = false
+    if (hand.length == 0) {
+      console.log('empty hand')
+      lost = false
+    } else {
+      let canDropSomewhere = false
+      hand.forEach(tile => {
+        for (let y = 0; y < 5; y++) {
+          for (let x = 0; x < 5; x++) {
+            if (grid[y][x] == '0000' && canDrop(`tile_${x}_${y}`, tile, grid)) {
+              canDropSomewhere = true
+            }
           }
         }
-      }
-    })
-    lost = !canDropSomewhere
-  }
+      })
+      lost = !canDropSomewhere
+    }
+    return lost
+  }, [hand, grid])
+  
 
   // Drag events assume you can only drag from your hand
   function handleDragStart(e: DragStartEvent) {
