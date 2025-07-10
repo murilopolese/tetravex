@@ -1,5 +1,5 @@
-const W = 7
-const H = 5
+const W = 5
+const H = 6
 
 export const COLORS = [
   '#FACBDB', // empty color

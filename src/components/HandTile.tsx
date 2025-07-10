@@ -1,7 +1,7 @@
 import TileSVG from "./TileSVG"
 import { CSS } from "@dnd-kit/utilities"
 import { useDraggable } from "@dnd-kit/core"
-import styles from './Tile.module.css'
+import styles from './App.module.css'
 
 type TileProps = {
   id: string;

@@ -1,5 +1,5 @@
 import TileSVG from "./TileSVG"
-import styles from './Tile.module.css'
+import styles from './App.module.css'
 
 type TileProps = {
   id: string;

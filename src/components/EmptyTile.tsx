@@ -3,7 +3,7 @@ import { useDroppable } from "@dnd-kit/core"
 import { Context as GameContext } from './GameContext'
 import TileSVG from './TileSVG'
 import { canDrop } from "../utilities"
-import styles from './Tile.module.css'
+import styles from './App.module.css'
 console.log(styles)
 
 type EmptyTyleProps = {
