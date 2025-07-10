@@ -21,11 +21,11 @@ type EmptyTyleProps = {
   id: string;
 }
 
-let initialGrid: string[][] = Array(5).fill('').map(() => Array(5).fill('0000'))
-let initialHand: string[] = ['1210']
+const initialGrid: string[][] = Array(5).fill('').map(() => Array(5).fill('0000'))
+const initialHand: string[] = ['1210']
 
 function idToPosition(id: string) {
-  const [ _, x, y ] = id.split('_')
+  const [ x, y ] = id.split('_').slice(1)
   return [ parseInt(x), parseInt(y) ]
 }
 
@@ -98,7 +98,7 @@ function App() {
       console.log('dropping tile', selectedTile)
       const overId: string = over.id + ''
       const [ x, y ] = idToPosition(overId)
-      let newGrid = grid.map(line => line.slice())
+      const newGrid = grid.map(line => line.slice())
       newGrid[y][x] = selectedTile||'0000'
       let newHand = hand.slice();
       const handIndex = newHand.indexOf(selectedTile)
