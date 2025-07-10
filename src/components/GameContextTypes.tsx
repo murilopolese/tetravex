@@ -11,5 +11,5 @@ export type GameContextType = {
 }
 
 export type GameContextProps = {
-  children?: ReactNode | undefined
+  children?: ReactNode
 }
