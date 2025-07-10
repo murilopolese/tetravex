@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export type GameContextType = {
   grid: string[][];
   hand: string[];
@@ -9,5 +11,5 @@ export type GameContextType = {
 }
 
 export type GameContextProps = {
-  children: any
+  children?: ReactNode | undefined
 }

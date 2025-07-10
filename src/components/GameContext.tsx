@@ -4,6 +4,7 @@ import { type GameContextType, type GameContextProps } from "./GameContextTypes"
 
 
 const initialContext: GameContextType = getInitialGameContext()
+/* eslint-disable-next-line react-refresh/only-export-components */
 export const Context = createContext(initialContext);
 
 function GameContext(props: GameContextProps) {
