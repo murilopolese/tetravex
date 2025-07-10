@@ -1,3 +1,7 @@
+:root {
+    --mobile-break-point: 600px;
+}
+
 * {
     box-sizing: border-box;
 }
