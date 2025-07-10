@@ -1,10 +1,10 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import './App.css'
 import { DndContext, useDraggable, useDroppable, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 
 const COLORS = [
-  '#FACBDB',
+  '#FACBDB', // empty color
   '#FACBDB',
   '#FF9D00',
   '#E8002B'
@@ -30,7 +30,8 @@ type GameContextType = {
 }
 
 const initialGrid: string[][] = Array(5).fill('').map(() => Array(5).fill('0000'))
-const initialHand: string[] = [randomTile()]
+initialGrid[2][2] = randomTile()
+const initialHand: string[] = randomHand()
 const initialContext: GameContextType = {
   grid: initialGrid,
   hand: initialHand,
@@ -50,6 +51,10 @@ function randomTile() {
   return `${rnd()}${rnd()}${rnd()}${rnd()}`
 }
 
+function randomHand() {
+  return [randomTile(), randomTile(), randomTile(), randomTile()]
+}
+
 function getBoundaries(grid: string[][], x: number, y: number) {
   const up = grid[(5+y-1)%5][x]
   const down = grid[(y+1)%5][x]
@@ -64,14 +69,22 @@ function getBoundaries(grid: string[][], x: number, y: number) {
 }
 
 function canDrop(id: string, selectedTile: string, grid: string[][]) {
+  // Turn string id into x,y grid coordinates
   const [ x, y ] = idToPosition(id)
-  // get surrounding boundaries
+
+  // Get surrounding boundaries
   const [ up, right, down, left ] = getBoundaries(grid, x, y)
-  if (!up && !right && !down && !left) return true
+
+  // Can't drop without surroundings
+  if (!up && !right && !down && !left) return false
+
+  // Can't drop if one of the surroundings is not valid
   if (up && parseInt(selectedTile[0]) != up) return false 
   if (right && parseInt(selectedTile[1]) != right) return false 
   if (down && parseInt(selectedTile[2]) != down) return false 
   if (left && parseInt(selectedTile[3]) != left) return false 
+
+  // Otherwise assume you can drop
   return true
 }
 
@@ -91,13 +104,13 @@ function TileSVG(props: TileSVGProps) {
 function EmptyTile(props: EmptyTyleProps) {
   const { id } = props
   const { selectedTile, grid } = useContext(GameContext)
-  const { isOver, setNodeRef } = useDroppable({ id: id })
+  const { setNodeRef } = useDroppable({ id: id })
+
   // Check if can drop currently selected tile based on neighbors
-  console.log(id, selectedTile, grid)
   if (selectedTile && canDrop(id, selectedTile, grid)) {
-    const style = { opacity: isOver ? 0.5 : 1 }
+    const style = { opacity: 0.5 }
     return (
-      <div id={id} className='tile empty' style={style} ref={setNodeRef}>
+      <div id={id} className='tile droppable' style={style} ref={setNodeRef}>
         <TileSVG content="0000"></TileSVG>
       </div>
     )
@@ -144,11 +157,28 @@ function App() {
   const [ grid, setGrid ] = useState(initialGrid)
   const [ selectedTile, setSelectedTile ] = useState<string|null>(null)
   const [ hand, setHand ] = useState(initialHand)
-  // const { grid, setGrid, hand, setHand, selectedTile, setSelectedTile } = useContext(GameContext)
 
+  let lost = false
+  if (hand.length == 0) {
+    console.log('empty hand')
+    lost = false
+  } else {
+    let canDropSomewhere = false
+    hand.forEach(tile => {
+      for (let y = 0; y < 5; y++) {
+        for (let x = 0; x < 5; x++) {
+          if (grid[y][x] == '0000' && canDrop(`tile_${x}_${y}`, tile, grid)) {
+            canDropSomewhere = true
+          }
+        }
+      }
+    })
+    lost = !canDropSomewhere
+  }
+
+  // Drag events assume you can only drag from your hand
   function handleDragStart(e: DragStartEvent) {
     const { active } = e
-    // if dragging from hand
     const [ i ] = idToPosition(active.id.toString())
     setSelectedTile(hand[i])
   }
@@ -177,6 +207,13 @@ function App() {
     setSelectedTile(null)
   }
 
+  // Reset state
+  function restart() {
+    setGrid(initialGrid)
+    setHand(randomHand())
+    setSelectedTile(null)
+  }
+
   return (
     <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       <GameContext value={{grid, setGrid, hand, setHand, selectedTile, setSelectedTile}}>
@@ -202,6 +239,7 @@ function App() {
                 />
             ))}
           </div>
+          {lost?<button onClick={() => restart()}>restart</button>:null}
         </div>
       </GameContext>
     </DndContext>
