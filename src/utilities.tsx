@@ -15,6 +15,14 @@ export const idToPosition = (id: string): number[] => {
   return [ parseInt(x), parseInt(y) ]
 }
 
+export const positionToId = (x: number, y?: number): string => {
+  if (y != undefined) {
+    return `tile_${x}_${y}`
+  } else {
+    return `tile_${x}`
+  }
+}
+
 export const randomTile = () : string => {
   function rnd() {
     // Avoid index 0
@@ -41,21 +49,70 @@ export const getBoundaries = (grid: string[][], x: number, y: number): number[] 
   ]
 }
 
-export const canDrop = (id: string, selectedTile: string, grid: string[][]): boolean => {
-  // Turn string id into x,y grid coordinates
-  const [ x, y ] = idToPosition(id)
-
+type canDropParams = {
+  x: number,
+  y: number,
+  tile: string,
+  grid: string[][]
+}
+export const canDrop = (params: canDropParams): boolean => {
+  const { x, y, tile, grid } = params
   // Get surrounding boundaries
   const [ up, right, down, left ] = getBoundaries(grid, x, y)
 
   // Can't drop without surroundings
   if (!up && !right && !down && !left) return false
 
-  // Can't drop if one of the surroundings is not valid
-  if (up && parseInt(selectedTile[0]) != up) return false 
-  if (right && parseInt(selectedTile[1]) != right) return false 
-  if (down && parseInt(selectedTile[2]) != down) return false 
-  if (left && parseInt(selectedTile[3]) != left) return false 
+  // Make special rule if the tile is on a border
+  const isLeftBorder = x == 0
+  const isRightBorder = x == W-1
+  const isTopBorder = y == 0
+  const isBottomBorder = y == H-1
+
+  if (isLeftBorder && isTopBorder) {
+    if (right == 0 && down == 0) return false
+    if (right && parseInt(tile[1]) != right) return false 
+    if (down && parseInt(tile[2]) != down) return false 
+  } else if (isLeftBorder && isBottomBorder) {
+    if (right == 0 && up == 0) return false
+    if (right && parseInt(tile[1]) != right) return false 
+    if (up && parseInt(tile[0]) != up) return false 
+  } else if (isRightBorder && isTopBorder) {
+    if (left == 0 && down == 0) return false
+    if (left && parseInt(tile[3]) != left) return false 
+    if (down && parseInt(tile[2]) != down) return false 
+  } else if (isRightBorder && isBottomBorder) {
+    if (left == 0 && up == 0) return false
+    if (up && parseInt(tile[0]) != up) return false 
+    if (left && parseInt(tile[3]) != left) return false 
+  } else if (isLeftBorder) {
+    if (up == 0 && right == 0 && down == 0) return false
+    if (up && parseInt(tile[0]) != up) return false 
+    if (right && parseInt(tile[1]) != right) return false 
+    if (down && parseInt(tile[2]) != down) return false 
+  } else if (isRightBorder) {
+    if (up == 0 && left == 0 && down == 0) return false
+    if (up && parseInt(tile[0]) != up) return false 
+    if (left && parseInt(tile[3]) != left) return false 
+    if (down && parseInt(tile[2]) != down) return false 
+  } else if (isTopBorder) {
+    if (right == 0 && left == 0 && down == 0) return false
+    if (right && parseInt(tile[1]) != right) return false 
+    if (down && parseInt(tile[2]) != down) return false 
+    if (left && parseInt(tile[3]) != left) return false 
+  } else if (isBottomBorder) {
+    if (right == 0 && left == 0 && up == 0) return false
+    if (up && parseInt(tile[0]) != up) return false 
+    if (right && parseInt(tile[1]) != right) return false 
+    if (left && parseInt(tile[3]) != left) return false 
+  } else {
+    // Can't drop if one of the surroundings is not valid
+    if (up && parseInt(tile[0]) != up) return false 
+    if (right && parseInt(tile[1]) != right) return false 
+    if (down && parseInt(tile[2]) != down) return false 
+    if (left && parseInt(tile[3]) != left) return false 
+  }
+
 
   // Otherwise assume you can drop
   return true
@@ -75,6 +132,9 @@ export const getInitialGameContext = (): GameContextType => {
       setGrid: () => undefined,
       setHand: () => undefined,
       setSelectedTile: () => undefined,
-      lost: false
+      lost: false,
+      handleDragStart: () => undefined,
+      handleDragEnd: () => undefined,
+      restart: () => undefined
     }
 }

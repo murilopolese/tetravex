@@ -1,21 +1,23 @@
-import { useContext } from "react"
+import { useContext, useMemo } from "react"
 import { useDroppable } from "@dnd-kit/core"
 import { Context as GameContext } from './GameContext'
 import TileSVG from './TileSVG'
-import { canDrop } from "../utilities"
+import { canDrop, positionToId } from "../utilities"
 import styles from './App.module.css'
 
 type EmptyTyleProps = {
-  id: string;
+  x: number;
+  y: number;
 }
 
 function EmptyTile(props: EmptyTyleProps) {
-  const { id } = props
+  const { x, y } = props
+  const id: string = useMemo(() => positionToId(x, y), [x, y])
   const { selectedTile, grid } = useContext(GameContext)
   const { setNodeRef } = useDroppable({ id: id })
 
   // Check if can drop currently selected tile based on neighbors
-  if (selectedTile && canDrop(id, selectedTile, grid)) {
+  if (selectedTile && canDrop({tile: selectedTile, x, y, grid})) {
     const style = { opacity: 0.5 }
     return (
       <div id={id} className={[styles.tile, styles.droppable].join(' ')} style={style} ref={setNodeRef}>

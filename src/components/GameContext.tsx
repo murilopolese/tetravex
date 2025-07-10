@@ -1,6 +1,7 @@
 import { createContext, useState, useMemo } from "react";
-import { getInitialGameContext, getInitialGrid, randomHand, canDrop } from "../utilities";
+import { getInitialGameContext, getInitialGrid, randomHand, canDrop, randomTile, idToPosition } from "../utilities";
 import { type GameContextType, type GameContextProps } from "./GameContextTypes";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 
 
 const initialContext: GameContextType = getInitialGameContext()
@@ -22,7 +23,7 @@ function GameContext(props: GameContextProps) {
       hand.forEach(handTile => {
         grid.forEach((line, y) => {
           line.forEach((dropTile, x) => {
-            if (dropTile == '0000' && canDrop(`tile_${x}_${y}`, handTile, grid)) {
+            if (dropTile == '0000' && canDrop({tile: handTile, x, y, grid})) {
               canDropSomewhere = true
             }
           })
@@ -33,8 +34,42 @@ function GameContext(props: GameContextProps) {
     return lost
   }, [hand, grid])
 
-  const context = {
-    grid, setGrid, selectedTile, setSelectedTile, hand, setHand, lost
+  // Drag events assume you can only drag from your hand
+  function handleDragStart(e: DragStartEvent) {
+    const { active } = e
+    const [ i ] = idToPosition(active.id.toString())
+    setSelectedTile(hand[i]||'')
+  }
+
+  function handleDragEnd(e: DragEndEvent) {
+    const { over } = e
+    if (over && selectedTile) {
+      const overId: string = over.id + ''
+      const [ x, y ] = idToPosition(overId)
+      const newGrid = grid.map(line => line.slice())
+      newGrid[y][x] = selectedTile||'0000'
+      let newHand = hand.slice();
+      const handIndex = newHand.indexOf(selectedTile)
+      newHand.splice(handIndex, 1)
+      if (newHand.length == 0) {
+        newHand = [ randomTile(), randomTile(), randomTile(), randomTile() ]
+      }
+      setHand(newHand)
+      setGrid(newGrid)
+    }
+    setSelectedTile('')
+  }
+
+  // Reset state
+  function restart() {
+    setGrid(getInitialGrid())
+    setHand(randomHand())
+    setSelectedTile('')
+  }
+
+  const context: GameContextType = {
+    grid, selectedTile, hand, lost,
+    handleDragStart, handleDragEnd, restart
   }
 
   return <Context value={context}>{children}</Context>

@@ -1,8 +1,14 @@
 export type TileProps = {
-  id: string;
-  content: string;
+  x: number,
+  y: number,
+  content: string
 }
 
 export type TileSVGProps = {
-  content: string;
+  content: string
+}
+
+export type HandTileProps = {
+  x: number,
+  content: string
 }

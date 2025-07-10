@@ -1,9 +1,12 @@
 import type { TileProps } from './TileTypes'
 import TileSVG from "./TileSVG"
 import styles from './App.module.css'
+import { useMemo } from 'react'
+import { positionToId } from '../utilities'
 
-function TableTile(props: TileProps) {
-  const { id, content } = props
+function PlacedTile(props: TileProps) {
+  const { x, y, content } = props
+  const id = useMemo(() => positionToId(x, y), [x, y])
   return (
     <div id={id} className={styles.tile}>
       <TileSVG content={content}></TileSVG>
@@ -11,4 +14,4 @@ function TableTile(props: TileProps) {
   )
 }
 
-export default TableTile
+export default PlacedTile

@@ -3,12 +3,12 @@ import PlacedTile from './PlacedTile'
 import type { TileProps } from './TileTypes'
 
 function Tile(props: TileProps) {
-  const { id, content } = props
+  const { x, y, content } = props
   const empty = content == '0000'
   if (empty) {
-    return <EmptyTile id={id} />
+    return <EmptyTile x={x} y={y} />
   } else {
-    return <PlacedTile id={id} content={content} />
+    return <PlacedTile x={x} y={y} content={content} />
   }
 }
 
