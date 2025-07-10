@@ -9,7 +9,7 @@
 }
 
 .grid {
-  width: 300px;
+  width: 320px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -22,13 +22,13 @@
 .hand {
   display: flex;
   flex-direction: row;
-  gap: 30px;
+  gap: 20px;
   padding: 30px 60px;
 }
 
 .tile {
-  width: calc( 300px / 5 );
-  height: calc( 300px / 5 );
+  width: calc( 320px / 5 );
+  height: calc( 320px / 5 );
   cursor: pointer;
   transition: opacity 0.1s;
 }
@@ -53,6 +53,9 @@ button {
   }
   .grid {
     width: 500px;
+  }
+  .hand {
+    gap: 30px;
   }
   .tile {
     width: 100px;
