@@ -1,19 +1,7 @@
 import { createContext, useState, useMemo } from "react";
 import { getInitialGameContext, getInitialGrid, randomHand, canDrop } from "../utilities";
+import { type GameContextType, type GameContextProps } from "./GameContextTypes";
 
-type GameContextType = {
-  grid: string[][];
-  hand: string[];
-  selectedTile: string|null;
-  setGrid: (g: string[][]) => void;
-  setHand: (g: string[]) => void;
-  setSelectedTile: (g: string) => void;
-  lost: boolean
-}
-
-type GameContextProps = {
-  children: any
-}
 
 const initialContext: GameContextType = getInitialGameContext()
 export const Context = createContext(initialContext);

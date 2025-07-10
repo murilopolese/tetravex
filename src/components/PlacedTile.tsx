@@ -1,10 +1,6 @@
+import type { TileProps } from './TileTypes'
 import TileSVG from "./TileSVG"
 import styles from './App.module.css'
-
-type TileProps = {
-  id: string;
-  content: string;
-}
 
 function TableTile(props: TileProps) {
   const { id, content } = props

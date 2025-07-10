@@ -1,8 +1,5 @@
 import { COLORS } from '../utilities'
-
-type TileSVGProps = {
-  content: string;
-}
+import type { TileSVGProps } from './TileTypes'
 
 function TileSVG(props: TileSVGProps) {
   const { content } = props

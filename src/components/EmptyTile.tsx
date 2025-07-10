@@ -4,7 +4,6 @@ import { Context as GameContext } from './GameContext'
 import TileSVG from './TileSVG'
 import { canDrop } from "../utilities"
 import styles from './App.module.css'
-console.log(styles)
 
 type EmptyTyleProps = {
   id: string;

@@ -1,3 +1,5 @@
+import type { GameContextType } from "./components/GameContextTypes"
+
 const W = 5
 const H = 6
 
@@ -8,12 +10,12 @@ export const COLORS = [
   '#E8002B'
 ]
 
-export function idToPosition(id: string) {
+export const idToPosition = (id: string): number[] => {
   const [ x, y ] = id.split('_').slice(1)
   return [ parseInt(x), parseInt(y) ]
 }
 
-export function randomTile() {
+export const randomTile = () : string => {
   function rnd() {
     // Avoid index 0
     return (Math.random()*(COLORS.length-2)+1).toFixed(0)
@@ -21,11 +23,12 @@ export function randomTile() {
   return `${rnd()}${rnd()}${rnd()}${rnd()}`
 }
 
-export function randomHand() {
+export const randomHand = (): string[] => {
   return [randomTile(), randomTile(), randomTile(), randomTile()]
 }
 
-export function getBoundaries(grid: string[][], x: number, y: number) {
+export const getBoundaries = (grid: string[][], x: number, y: number): number[] => {
+  // This function will return the specific color index and not the entire tile
   const up = grid[(H+y-1)%H][x]
   const down = grid[(y+1)%H][x]
   const left = grid[y][(W+x-1)%W]
@@ -38,7 +41,7 @@ export function getBoundaries(grid: string[][], x: number, y: number) {
   ]
 }
 
-export function canDrop(id: string, selectedTile: string, grid: string[][]) {
+export const canDrop = (id: string, selectedTile: string, grid: string[][]): boolean => {
   // Turn string id into x,y grid coordinates
   const [ x, y ] = idToPosition(id)
 
@@ -58,13 +61,13 @@ export function canDrop(id: string, selectedTile: string, grid: string[][]) {
   return true
 }
 
-export function getInitialGrid() {
+export const getInitialGrid = (): string[][] => {
     const initialGrid: string[][] = Array(H).fill('').map(() => Array(W).fill('0000'))
     initialGrid[2][2] = randomTile()
     return initialGrid
 }
 
-export function getInitialGameContext() {
+export const getInitialGameContext = (): GameContextType => {
     return {
       grid: getInitialGrid(),
       hand: randomHand(),

@@ -1,12 +1,8 @@
-import TileSVG from "./TileSVG"
-import { CSS } from "@dnd-kit/utilities"
 import { useDraggable } from "@dnd-kit/core"
+import { CSS } from "@dnd-kit/utilities"
+import type { TileProps } from './TileTypes'
+import TileSVG from "./TileSVG"
 import styles from './App.module.css'
-
-type TileProps = {
-  id: string;
-  content: string;
-}
 
 function HandTile(props: TileProps) {
   const { id, content } = props

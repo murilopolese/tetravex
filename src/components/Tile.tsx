@@ -1,10 +1,6 @@
 import EmptyTile from './EmptyTile'
 import PlacedTile from './PlacedTile'
-
-type TileProps = {
-  id: string;
-  content: string;
-}
+import type { TileProps } from './TileTypes'
 
 function Tile(props: TileProps) {
   const { id, content } = props
