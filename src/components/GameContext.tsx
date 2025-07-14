@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useEffect } from "react";
 import { getInitialGameContext, getInitialGrid, randomHand, canDrop, randomTile, idToPosition } from "../utilities";
 import { type GameContextType, type GameContextProps } from "./GameContextTypes";
 import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
@@ -13,6 +13,7 @@ function GameContext(props: GameContextProps) {
   const [ grid, setGrid ] = useState(getInitialGrid())
   const [ selectedTile, setSelectedTile ] = useState<string>('')
   const [ hand, setHand ] = useState(randomHand())
+  const [ windowWidth, setWindowWidth ] = useState(window.innerWidth)
 
   const lost = useMemo(() => {
     let lost = false
@@ -34,6 +35,14 @@ function GameContext(props: GameContextProps) {
     return lost
   }, [hand, grid])
 
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      const { innerWidth } = window
+      setWindowWidth(innerWidth)
+    })
+
+  }, [])
+
   // Drag events assume you can only drag from your hand
   function handleDragStart(e: DragStartEvent) {
     const { active } = e
@@ -50,7 +59,7 @@ function GameContext(props: GameContextProps) {
       newGrid[y][x] = selectedTile||'0000'
       let newHand = hand.slice();
       const handIndex = newHand.indexOf(selectedTile)
-      newHand.splice(handIndex, 1)
+      newHand.splice(handIndex, 1, randomTile())
       if (newHand.length == 0) {
         newHand = [ randomTile(), randomTile(), randomTile(), randomTile() ]
       }
@@ -68,7 +77,7 @@ function GameContext(props: GameContextProps) {
   }
 
   const context: GameContextType = {
-    grid, selectedTile, hand, lost,
+    grid, selectedTile, hand, lost, windowWidth,
     handleDragStart, handleDragEnd, restart
   }
 

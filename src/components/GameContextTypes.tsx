@@ -9,6 +9,7 @@ export type GameContextType = {
   setHand?: (g: string[]) => void,
   setSelectedTile?: (g: string) => void,
   lost: boolean,
+  windowWidth: number,
   handleDragStart: (e: DragStartEvent) => void,
   handleDragEnd: (e: DragEndEvent) => void,
   restart: () => void

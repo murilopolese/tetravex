@@ -1,7 +1,17 @@
 import type { GameContextType } from "./components/GameContextTypes"
 
-const W = 5
-const H = 6
+// Swap this on mobile
+export const W = 2
+export const H = 3
+
+export const getTileSize = (windowWidth: number): number => {
+  // TODO: Sync this with CSS classes for grid and so on
+  if (windowWidth > 600) {
+    return (450/W)
+  } else {
+    return (320/W)
+  }
+}
 
 export const COLORS = [
   '#FACBDB', // empty color
@@ -63,7 +73,7 @@ export const canDrop = (params: canDropParams): boolean => {
   // Can't drop without surroundings
   if (!up && !right && !down && !left) return false
 
-  // Make special rule if the tile is on a border
+  // Make special rules if the tile is on a border
   const isLeftBorder = x == 0
   const isRightBorder = x == W-1
   const isTopBorder = y == 0
@@ -113,28 +123,28 @@ export const canDrop = (params: canDropParams): boolean => {
     if (left && parseInt(tile[3]) != left) return false 
   }
 
-
   // Otherwise assume you can drop
   return true
 }
 
 export const getInitialGrid = (): string[][] => {
-    const initialGrid: string[][] = Array(H).fill('').map(() => Array(W).fill('0000'))
-    initialGrid[2][2] = randomTile()
-    return initialGrid
+  const initialGrid: string[][] = Array(H).fill('').map(() => Array(W).fill('0000'))
+  initialGrid[1][1] = randomTile()
+  return initialGrid
 }
 
 export const getInitialGameContext = (): GameContextType => {
-    return {
-      grid: getInitialGrid(),
-      hand: randomHand(),
-      selectedTile: '',
-      setGrid: () => undefined,
-      setHand: () => undefined,
-      setSelectedTile: () => undefined,
-      lost: false,
-      handleDragStart: () => undefined,
-      handleDragEnd: () => undefined,
-      restart: () => undefined
-    }
+  return {
+    grid: getInitialGrid(),
+    hand: randomHand(),
+    selectedTile: '',
+    setGrid: () => undefined,
+    setHand: () => undefined,
+    setSelectedTile: () => undefined,
+    lost: false,
+    handleDragStart: () => undefined,
+    handleDragEnd: () => undefined,
+    restart: () => undefined,
+    windowWidth: 0
+  }
 }

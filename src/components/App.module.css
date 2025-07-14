@@ -52,13 +52,13 @@ button {
     max-width: 600px;
   }
   .grid {
-    width: 500px;
+    width: 450px;
   }
   .hand {
     gap: 30px;
   }
   .tile {
-    width: 100px;
-    height: 100px;
+    width: calc( 450px / 5 );
+    height: calc( 450px / 5 );
   }
 }
