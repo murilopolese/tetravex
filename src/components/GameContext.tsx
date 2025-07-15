@@ -36,11 +36,12 @@ function GameContext(props: GameContextProps) {
   }, [hand, grid])
 
   useEffect(() => {
-    window.addEventListener('resize', () => {
+    function updateWindowWidth() {
       const { innerWidth } = window
       setWindowWidth(innerWidth)
-    })
-
+    }
+    window.addEventListener('resize', updateWindowWidth)
+    return () => window.removeEventListener('resize', updateWindowWidth)
   }, [])
 
   // Drag events assume you can only drag from your hand
